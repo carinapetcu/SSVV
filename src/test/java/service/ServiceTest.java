@@ -40,20 +40,22 @@ public class ServiceTest {
     @Test
     public void test_AddStudent_IdValidAndNotExistent_StudentAdded() {
         final Student student = new Student("100", "a", 936, "a@scs.ubbcluj.ro");
-        service.deleteStudent("100");
         final Student result = service.addStudent(student);
 
         assertNull(result);
+
+        service.deleteStudent("100");
     }
 
     @Test
     public void test_AddStudent_ExistentId_NothingChanges() {
         final Student student = new Student("100", "a", 936, "a@scs.ubbcluj.ro");
-        service.deleteStudent("100");
         service.addStudent(student);
         final Student result = service.addStudent(student);
 
         assertNotNull(result);
         assertEquals("100", result.getID());
+
+        service.deleteStudent("100");
     }
 }
