@@ -9,6 +9,7 @@ import repository.TemaXMLRepo;
 import validation.NotaValidator;
 import validation.StudentValidator;
 import validation.TemaValidator;
+import validation.ValidationException;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +40,7 @@ public class ServiceTest {
 
     @Test
     public void test_AddStudent_IdValidAndNotExistent_StudentAdded() {
-        final Student student = new Student("100", "a", 936, "a@scs.ubbcluj.ro");
+        final Student student = new Student("100", "a", 0, "a@scs.ubbcluj.ro");
         final Student result = service.addStudent(student);
 
         assertNull(result);
@@ -49,7 +50,7 @@ public class ServiceTest {
 
     @Test
     public void test_AddStudent_ExistentId_NothingChanges() {
-        final Student student = new Student("100", "a", 936, "a@scs.ubbcluj.ro");
+        final Student student = new Student("100", "a", 1, "a@scs.ubbcluj.ro");
         service.addStudent(student);
         final Student result = service.addStudent(student);
 
@@ -57,5 +58,54 @@ public class ServiceTest {
         assertEquals("100", result.getID());
 
         service.deleteStudent("100");
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_EmptyIdStudent_ThrowsErrorMessage() {
+        final Student student = new Student("", "a", 0, "a@scs.ubbcluj.ro");
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void test_AddStudent_NullIdStudent_ThrowsErrorMessage() {
+        final Student student = new Student(null, "a", 0, "a@scs.ubbcluj.ro");
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_EmptyName_ThrowsErrorMessage() {
+        final Student student = new Student("100", "", 0, "a@scs.ubbcluj.ro");
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_NullName_ThrowsErrorMessage() {
+        final Student student = new Student("100", null, 0, "a@scs.ubbcluj.ro");
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_EmptyEmail_ThrowsErrorMessage() {
+        final Student student = new Student("100", "a", 0, "");
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_NullEmail_ThrowsErrorMessage() {
+        final Student student = new Student("100", "a", 0, null);
+
+        service.addStudent(student);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddStudent_NegativeGroup_ThrowsErrorMessage() {
+        final Student student = new Student("100", "a", -1, "a@scs.ubbcluj.ro");
+
+        service.addStudent(student);
     }
 }
