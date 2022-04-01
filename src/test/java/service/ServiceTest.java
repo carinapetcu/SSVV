@@ -1,6 +1,7 @@
 package service;
 
 import domain.Student;
+import domain.Tema;
 import org.junit.Before;
 import org.junit.Test;
 import repository.NotaXMLRepo;
@@ -107,5 +108,52 @@ public class ServiceTest {
         final Student student = new Student("100", "a", -1, "a@scs.ubbcluj.ro");
 
         service.addStudent(student);
+    }
+
+    @Test
+    public void test_AddTema_IdValidAndNotExistent_TemaAdded() {
+        final Tema tema = new Tema("100", "abc", 3, 1);
+        final Tema result = service.addTema(tema);
+
+        assertNull(result);
+
+        service.deleteTema("100");
+    }
+
+    @Test
+    public void test_AddTema_IdValidAndExistent_NothingChanges() {
+        final Tema tema = new Tema("1", "abc", 3, 1);
+        final Tema result = service.addTema(tema);
+
+        assertNotNull(result);
+        assertEquals("1", result.getID());
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddTema_EmptyInvalidId_ThrowsErrorMessage() {
+        final Tema tema = new Tema("", "abc", 3, 1);
+
+        service.addTema(tema);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddTema_EmptyInvalidDescriere_ThrowsErrorMessage() {
+        final Tema tema = new Tema("1", "", 3, 1);
+
+        service.addTema(tema);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddTema_InvalidDeadline_ThrowsErrorMessage() {
+        final Tema tema = new Tema("1", "abc", -1, 1);
+
+        service.addTema(tema);
+    }
+
+    @Test(expected=ValidationException.class)
+    public void test_AddTema_InvalidPrimire_ThrowsErrorMessage() {
+        final Tema tema = new Tema("1", "abc", 3, 15);
+
+        service.addTema(tema);
     }
 }
