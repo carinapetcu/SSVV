@@ -89,4 +89,36 @@ public class IntegrationTest {
         service.deleteTema("100");
         service.deleteStudent("100");
     }
+
+    @Test
+    public void test_AddTemaIncrementalIntegration() {
+        final Student student = new Student("100", "a", 0, "a@scs.ubbcluj.ro");
+        final Tema tema = new Tema("100", "abc", 3, 1);
+
+        service.addStudent(student);
+        final Tema result = service.addTema(tema);
+
+        assertNull(result);
+
+        service.deleteTema("100");
+        service.deleteStudent("100");
+    }
+
+    @Test
+    public void test_AddNotaIncrementalIntegration() {
+        final Student student = new Student("100", "a", 0, "a@scs.ubbcluj.ro");
+        final Tema tema = new Tema("100", "abc", 3, 1);
+        final Nota nota = new Nota(null, "100", "100", 10, LocalDate.of(2018, 10, 7));
+
+        service.addStudent(student);
+        service.addTema(tema);
+
+        final double result = service.addNota(nota, "very good");
+
+        assertEquals(10, result, 0.0);
+
+        service.deleteNota("100");
+        service.deleteTema("100");
+        service.deleteStudent("100");
+    }
 }
